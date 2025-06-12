@@ -15,7 +15,7 @@ export const CoinbaseWalletFlow: React.FC<CoinbaseWalletFlowProps> = ({ onBack, 
   const [pointsAmount, setPointsAmount] = useState(3000);
   const [isConnecting, setIsConnecting] = useState(false);
   
-  const usdcAmount = pointsAmount / 100;
+  const usdcAmount = pointsAmount * 0.001;
   const sywFee = (usdcAmount * 0.005) + 2.50;
 
   const handleConnect = () => {
@@ -94,7 +94,7 @@ export const CoinbaseWalletFlow: React.FC<CoinbaseWalletFlowProps> = ({ onBack, 
                   className="w-24"
                 />
                 <span className="text-gray-400">→</span>
-                <span className="text-sm">USDC: {usdcAmount}</span>
+                <span className="text-sm">USDC: {usdcAmount.toFixed(2)}</span>
               </div>
               
               <div className="space-y-1 text-sm">

@@ -15,7 +15,7 @@ export const CoinbaseAccountFlow: React.FC<CoinbaseAccountFlowProps> = ({ onBack
   const [depositAddress, setDepositAddress] = useState('');
   const [pointsAmount, setPointsAmount] = useState(3000);
   
-  const usdcAmount = pointsAmount / 100;
+  const usdcAmount = pointsAmount * 0.001;
   const sywFee = (usdcAmount * 0.005) + 2.50;
   const netUSDC = usdcAmount - sywFee;
 
