@@ -5,7 +5,8 @@ import { Coins, TrendingUp } from 'lucide-react';
 
 export const PointsBalance = () => {
   const pointsBalance = 3000;
-  const usdcValue = pointsBalance / 100; // 100 points = $1 USDC
+  const exchangeRate = 0.0095; // $0.0095 per point
+  const usdcValue = pointsBalance * exchangeRate;
 
   return (
     <Card className="mb-8 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
@@ -28,7 +29,7 @@ export const PointsBalance = () => {
             <div>
               <h3 className="text-sm font-medium opacity-90">Estimated USDC Value</h3>
               <p className="text-3xl font-bold">${usdcValue.toFixed(2)}</p>
-              <p className="text-sm opacity-75">100 points = $1.00 USDC</p>
+              <p className="text-sm opacity-75">1 point = $0.0095 USDC</p>
             </div>
           </div>
         </div>

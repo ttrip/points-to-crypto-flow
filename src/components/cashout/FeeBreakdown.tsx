@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Calculator, Info } from 'lucide-react';
+import { Calculator, Info, TrendingUp } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface FeeBreakdownProps {
@@ -11,13 +11,14 @@ interface FeeBreakdownProps {
 }
 
 export const FeeBreakdown: React.FC<FeeBreakdownProps> = ({ pointsToRedeem }) => {
-  const grossUSDC = pointsToRedeem / 100; // 100 points = $1 USDC
+  const exchangeRate = 0.0095; // $0.0095 per point (similar to airline/Amex model)
+  const grossUSDC = pointsToRedeem * exchangeRate;
   const flatFee = 2.50;
   const variableFeeRate = 0.005; // 0.5%
   const variableFee = grossUSDC * variableFeeRate;
-  const totalSYWFee = Math.min(flatFee + variableFee, 25); // Cap at $25
+  const totalPlatformFee = Math.min(flatFee + variableFee, 25); // Cap at $25
   const estimatedGasFee = 15.00; // Current Ethereum gas estimate
-  const netUSDC = grossUSDC - totalSYWFee - estimatedGasFee;
+  const netUSDC = grossUSDC - totalPlatformFee - estimatedGasFee;
 
   return (
     <TooltipProvider>
@@ -40,6 +41,26 @@ export const FeeBreakdown: React.FC<FeeBreakdownProps> = ({ pointsToRedeem }) =>
             />
           </div>
 
+          {/* Exchange Rate Section */}
+          <div className="border rounded-lg p-4 space-y-3 bg-blue-50 border-blue-200">
+            <div className="flex items-center space-x-2">
+              <TrendingUp className="w-4 h-4 text-blue-600" />
+              <h4 className="font-medium text-blue-900">Exchange Rate</h4>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Info className="w-3 h-3 text-blue-400" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Similar to airline miles or Amex points, SYW points have their own exchange value</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-blue-700">1 SYW Point = $0.0095 USDC</span>
+              <span className="font-medium text-blue-900">{pointsToRedeem.toLocaleString()} pts → ${grossUSDC.toFixed(2)} USDC</span>
+            </div>
+          </div>
+
           <div className="border rounded-lg p-4 space-y-3">
             <h4 className="font-medium mb-3">Fee Calculation</h4>
             
@@ -51,7 +72,7 @@ export const FeeBreakdown: React.FC<FeeBreakdownProps> = ({ pointsToRedeem }) =>
               
               <div className="flex justify-between items-center">
                 <div className="flex items-center space-x-1">
-                  <span>SYW Cash-Out Fee</span>
+                  <span>Platform Exchange Fee</span>
                   <Tooltip>
                     <TooltipTrigger>
                       <Info className="w-3 h-3 text-gray-400" />
@@ -61,7 +82,7 @@ export const FeeBreakdown: React.FC<FeeBreakdownProps> = ({ pointsToRedeem }) =>
                     </TooltipContent>
                   </Tooltip>
                 </div>
-                <span className="text-red-600">-${totalSYWFee.toFixed(2)}</span>
+                <span className="text-red-600">-${totalPlatformFee.toFixed(2)}</span>
               </div>
               
               <div className="flex justify-between items-center">
@@ -91,9 +112,9 @@ export const FeeBreakdown: React.FC<FeeBreakdownProps> = ({ pointsToRedeem }) =>
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
             <h5 className="font-medium text-blue-900 mb-2">Fee Structure Details</h5>
             <ul className="text-sm text-blue-700 space-y-1">
-              <li>• Flat fee: $2.50 per transaction</li>
-              <li>• Variable fee: 0.5% of USDC amount</li>
-              <li>• Maximum total fee: $25 per transaction</li>
+              <li>• Exchange rate: $0.0095 per SYW point</li>
+              <li>• Platform fee: $2.50 flat + 0.5% of USDC amount</li>
+              <li>• Maximum platform fee: $25 per transaction</li>
               <li>• Gas fees are pass-through (current network rates)</li>
             </ul>
           </div>
