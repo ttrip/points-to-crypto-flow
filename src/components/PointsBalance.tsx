@@ -29,7 +29,7 @@ export const PointsBalance = () => {
             <div>
               <h3 className="text-sm font-medium opacity-90">Estimated USDC Value</h3>
               <p className="text-3xl font-bold">${usdcValue.toFixed(2)}</p>
-              <p className="text-sm opacity-75">1 point = $0.001 USDC</p>
+              <p className="text-sm opacity-75">1000 points = $1.00 USDC</p>
             </div>
           </div>
         </div>

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -55,7 +54,7 @@ export const FeeBreakdown: React.FC<FeeBreakdownProps> = ({ pointsToRedeem }) =>
               </Tooltip>
             </div>
             <div className="flex justify-between items-center text-sm">
-              <span className="text-blue-700">1 SYW Point = $0.001 USDC</span>
+              <span className="text-blue-700">1000 SYW Points = $1.00 USDC</span>
               <span className="font-medium text-blue-900">{pointsToRedeem.toLocaleString()} pts → ${grossUSDC.toFixed(2)} USDC</span>
             </div>
           </div>
@@ -96,7 +95,7 @@ export const FeeBreakdown: React.FC<FeeBreakdownProps> = ({ pointsToRedeem }) =>
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
             <h5 className="font-medium text-blue-900 mb-2">Fee Structure Details</h5>
             <ul className="text-sm text-blue-700 space-y-1">
-              <li>• Exchange rate: $0.001 per SYW point</li>
+              <li>• Exchange rate: 1000 SYW Points = $1.00 USDC</li>
               <li>• Platform fee: $2.50 flat + 0.5% of USDC amount</li>
               <li>• Maximum platform fee: $25 per transaction</li>
             </ul>
