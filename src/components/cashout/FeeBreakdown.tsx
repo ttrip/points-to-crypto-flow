@@ -17,8 +17,7 @@ export const FeeBreakdown: React.FC<FeeBreakdownProps> = ({ pointsToRedeem }) =>
   const variableFeeRate = 0.005; // 0.5%
   const variableFee = grossUSDC * variableFeeRate;
   const totalPlatformFee = Math.min(flatFee + variableFee, 25); // Cap at $25
-  const estimatedGasFee = 15.00; // Current Ethereum gas estimate
-  const netUSDC = grossUSDC - totalPlatformFee - estimatedGasFee;
+  const netUSDC = grossUSDC - totalPlatformFee;
 
   return (
     <TooltipProvider>
@@ -85,21 +84,6 @@ export const FeeBreakdown: React.FC<FeeBreakdownProps> = ({ pointsToRedeem }) =>
                 <span className="text-red-600">-${totalPlatformFee.toFixed(2)}</span>
               </div>
               
-              <div className="flex justify-between items-center">
-                <div className="flex items-center space-x-1">
-                  <span>Network Gas Fee</span>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <Info className="w-3 h-3 text-gray-400" />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Current Ethereum network fee (estimated)</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </div>
-                <span className="text-red-600">-${estimatedGasFee.toFixed(2)}</span>
-              </div>
-              
               <hr className="my-2" />
               
               <div className="flex justify-between font-medium text-lg">
@@ -115,7 +99,6 @@ export const FeeBreakdown: React.FC<FeeBreakdownProps> = ({ pointsToRedeem }) =>
               <li>• Exchange rate: $0.0095 per SYW point</li>
               <li>• Platform fee: $2.50 flat + 0.5% of USDC amount</li>
               <li>• Maximum platform fee: $25 per transaction</li>
-              <li>• Gas fees are pass-through (current network rates)</li>
             </ul>
           </div>
         </CardContent>

@@ -17,7 +17,6 @@ export const CoinbaseWalletFlow: React.FC<CoinbaseWalletFlowProps> = ({ onBack, 
   
   const usdcAmount = pointsAmount / 100;
   const sywFee = (usdcAmount * 0.005) + 2.50;
-  const gasFee = 12.00;
 
   const handleConnect = () => {
     setIsConnecting(true);
@@ -33,7 +32,6 @@ export const CoinbaseWalletFlow: React.FC<CoinbaseWalletFlowProps> = ({ onBack, 
       points: pointsAmount,
       usdcAmount,
       sywFee,
-      gasFee,
       txHash: '0x456...def'
     };
     onComplete(txData);
@@ -103,10 +101,6 @@ export const CoinbaseWalletFlow: React.FC<CoinbaseWalletFlowProps> = ({ onBack, 
                 <div className="flex justify-between">
                   <span>• SYW Fee:</span>
                   <span>${sywFee.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>• Gas Fee: <span className="text-gray-500">(user-paid)</span></span>
-                  <span>${gasFee.toFixed(2)}</span>
                 </div>
               </div>
             </div>

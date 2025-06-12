@@ -17,8 +17,7 @@ export const CoinbaseAccountFlow: React.FC<CoinbaseAccountFlowProps> = ({ onBack
   
   const usdcAmount = pointsAmount / 100;
   const sywFee = (usdcAmount * 0.005) + 2.50;
-  const gasFee = 12.00;
-  const netUSDC = usdcAmount - sywFee - gasFee;
+  const netUSDC = usdcAmount - sywFee;
 
   const handleConfirm = () => {
     const txData = {
@@ -95,10 +94,6 @@ export const CoinbaseAccountFlow: React.FC<CoinbaseAccountFlowProps> = ({ onBack
             <div className="flex justify-between">
               <span>• SYW Fee (0.5% + $2.50):</span>
               <span>${sywFee.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>• Network gas fee (est.):</span>
-              <span>${gasFee.toFixed(2)}</span>
             </div>
             <hr className="my-2" />
             <div className="flex justify-between font-medium">
