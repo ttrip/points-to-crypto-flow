@@ -1,12 +1,60 @@
 
 import React, { useState } from 'react';
 import { Navigation } from '@/components/Navigation';
-import { CashOutFlow } from '@/components/CashOutFlow';
+import { CashOutLanding } from '@/components/v2/CashOutLanding';
+import { CoinbaseAccountFlow } from '@/components/v2/CoinbaseAccountFlow';
+import { CoinbaseWalletFlow } from '@/components/v2/CoinbaseWalletFlow';
+import { ConfirmationStatus } from '@/components/v2/ConfirmationStatus';
 import { PointsBalance } from '@/components/PointsBalance';
 
+type FlowType = 'landing' | 'account' | 'wallet' | 'confirmation';
+
 const Index = () => {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [userScenario, setUserScenario] = useState<'new' | 'existing' | null>(null);
+  const [currentFlow, setCurrentFlow] = useState<FlowType>('landing');
+  const [transactionData, setTransactionData] = useState<any>(null);
+
+  const handleFlowSelect = (flow: 'account' | 'wallet') => {
+    setCurrentFlow(flow);
+  };
+
+  const handleTransactionComplete = (txData: any) => {
+    setTransactionData(txData);
+    setCurrentFlow('confirmation');
+  };
+
+  const handleBack = () => {
+    setCurrentFlow('landing');
+  };
+
+  const renderCurrentFlow = () => {
+    switch (currentFlow) {
+      case 'landing':
+        return <CashOutLanding onFlowSelect={handleFlowSelect} />;
+      case 'account':
+        return (
+          <CoinbaseAccountFlow 
+            onBack={handleBack}
+            onComplete={handleTransactionComplete}
+          />
+        );
+      case 'wallet':
+        return (
+          <CoinbaseWalletFlow 
+            onBack={handleBack}
+            onComplete={handleTransactionComplete}
+          />
+        );
+      case 'confirmation':
+        return (
+          <ConfirmationStatus 
+            transactionData={transactionData}
+            onDone={() => setCurrentFlow('landing')}
+          />
+        );
+      default:
+        return <CashOutLanding onFlowSelect={handleFlowSelect} />;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
@@ -25,12 +73,7 @@ const Index = () => {
 
           <PointsBalance />
           
-          <CashOutFlow 
-            currentStep={currentStep}
-            setCurrentStep={setCurrentStep}
-            userScenario={userScenario}
-            setUserScenario={setUserScenario}
-          />
+          {renderCurrentFlow()}
         </div>
       </div>
     </div>
