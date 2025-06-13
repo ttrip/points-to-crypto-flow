@@ -61,7 +61,7 @@ export const ExistingUserFlow: React.FC<ExistingUserFlowProps> = ({ currentStep,
                   <h4 className="font-medium mb-2">⚡ Coinbase Wallet</h4>
                   <p className="text-sm text-gray-600 mb-3">Connect directly • Choose transfer method</p>
                   <Button className="w-full bg-green-600 hover:bg-green-700">
-                    Connect Coinbase
+                    Connect Wallet
                   </Button>
                 </CardContent>
               </Card>
