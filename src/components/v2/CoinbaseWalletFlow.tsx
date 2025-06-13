@@ -1,8 +1,9 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Wallet, CheckCircle, Zap, DollarSign, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Wallet, CheckCircle, Zap, DollarSign, AlertCircle, Coins } from 'lucide-react';
 import { toast } from '@/components/ui/sonner';
 
 interface CoinbaseWalletFlowProps {
@@ -34,14 +35,14 @@ export const CoinbaseWalletFlow: React.FC<CoinbaseWalletFlowProps> = ({ onBack, 
 
   const handleSignInWallet = () => {
     // Show confirmation toast
-    const transferMethodText = transferMethod === 'assets' ? 'Direct to Assets' : 'Direct to Ethereum';
-    toast("Wallet Transaction Confirmed! 🎉", {
+    const transferMethodText = transferMethod === 'assets' ? 'Direct to Coinbase Assets' : 'Direct to Ethereum Wallet';
+    toast("USDC Purchase Confirmed! 🎉", {
       description: `Converting ${pointsAmount} points to $${netUSDC.toFixed(2)} USDC via ${transferMethodText}. Processing transaction...`,
       duration: 4000,
     });
 
     const txData = {
-      type: 'wallet',
+      type: 'direct_usdc_wallet',
       transferMethod,
       points: pointsAmount,
       usdcAmount,
@@ -65,14 +66,33 @@ export const CoinbaseWalletFlow: React.FC<CoinbaseWalletFlowProps> = ({ onBack, 
           <Button variant="ghost" size="sm" onClick={onBack}>
             <ArrowLeft className="w-4 h-4" />
           </Button>
-          <CardTitle>Coinbase Wallet Flow</CardTitle>
+          <CardTitle className="flex items-center space-x-2">
+            <Coins className="w-5 h-5 text-blue-600" />
+            <span>Direct USDC Purchase → Coinbase Wallet</span>
+          </CardTitle>
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Explanation */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex items-start space-x-2">
+            <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5" />
+            <div className="text-sm text-blue-800">
+              <h4 className="font-medium mb-2">How Direct USDC Purchase Works:</h4>
+              <ul className="list-disc list-inside space-y-1">
+                <li>Your SYW points are instantly converted to USDC cryptocurrency</li>
+                <li>USDC goes directly to your connected Coinbase Wallet</li>
+                <li>No manual address entry - fully automated</li>
+                <li>Perfect for crypto-savvy users who want immediate USDC</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
         {/* Step 1: Connect Wallet */}
         <div className="space-y-3">
           <div className="flex items-center space-x-2">
-            <span className="text-sm font-medium">→ Step 1: Connect Wallet</span>
+            <span className="text-sm font-medium">→ Step 1: Connect Your Coinbase Wallet</span>
             {isConnected && <CheckCircle className="w-4 h-4 text-green-500" />}
           </div>
           
@@ -83,7 +103,7 @@ export const CoinbaseWalletFlow: React.FC<CoinbaseWalletFlowProps> = ({ onBack, 
               className="w-full"
             >
               <Wallet className="w-4 h-4 mr-2" />
-              {isConnecting ? 'Connecting...' : 'Connect Coinbase'}
+              {isConnecting ? 'Connecting...' : 'Connect Coinbase Wallet'}
             </Button>
           ) : (
             <div className="bg-green-50 border border-green-200 rounded-lg p-3">
@@ -98,11 +118,11 @@ export const CoinbaseWalletFlow: React.FC<CoinbaseWalletFlowProps> = ({ onBack, 
           )}
         </div>
 
-        {/* Step 2: Choose Transfer Method */}
+        {/* Step 2: Choose USDC Delivery Method */}
         {isConnected && !transferMethod && (
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <span className="text-sm font-medium">→ Step 2: Choose transfer method</span>
+              <span className="text-sm font-medium">→ Step 2: Choose USDC delivery method</span>
             </div>
             
             <div className="grid gap-4">
@@ -116,8 +136,8 @@ export const CoinbaseWalletFlow: React.FC<CoinbaseWalletFlowProps> = ({ onBack, 
                     <Zap className="w-5 h-5 text-green-600" />
                   </div>
                   <div className="text-left flex-1">
-                    <div className="font-semibold">Direct to Assets (Recommended)</div>
-                    <div className="text-sm text-gray-600">No network fees • Instant • Stay in Coinbase</div>
+                    <div className="font-semibold">Direct to Coinbase Assets (Recommended)</div>
+                    <div className="text-sm text-gray-600">USDC stays in Coinbase • No network fees • Instant</div>
                   </div>
                   <div className="text-right">
                     <div className="text-sm font-medium text-green-600">No extra fees</div>
@@ -135,8 +155,8 @@ export const CoinbaseWalletFlow: React.FC<CoinbaseWalletFlowProps> = ({ onBack, 
                     <DollarSign className="w-5 h-5 text-orange-600" />
                   </div>
                   <div className="text-left flex-1">
-                    <div className="font-semibold">Direct to Ethereum Wallet</div>
-                    <div className="text-sm text-gray-600">Network fees apply • Self-custody • External wallet</div>
+                    <div className="font-semibold">Direct to Ethereum Network</div>
+                    <div className="text-sm text-gray-600">USDC to external wallet • Network fees apply • Self-custody</div>
                   </div>
                   <div className="text-right">
                     <div className="text-sm font-medium text-orange-600">~$3.50 network fee</div>
@@ -149,7 +169,7 @@ export const CoinbaseWalletFlow: React.FC<CoinbaseWalletFlowProps> = ({ onBack, 
               <div className="flex items-start space-x-2">
                 <AlertCircle className="w-4 h-4 text-blue-600 mt-0.5" />
                 <div className="text-sm text-blue-700">
-                  <strong>Recommendation:</strong> Choose "Direct to Assets" to avoid network fees. Your USDC will be available instantly in your Coinbase account.
+                  <strong>Recommendation:</strong> Choose "Direct to Assets" to keep your USDC in Coinbase with no network fees. Perfect for trading or converting later.
                 </div>
               </div>
             </div>
@@ -160,12 +180,12 @@ export const CoinbaseWalletFlow: React.FC<CoinbaseWalletFlowProps> = ({ onBack, 
         {isConnected && transferMethod && (
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <span className="text-sm font-medium">→ Step 3: Enter points & preview</span>
+              <span className="text-sm font-medium">→ Step 3: Configure your USDC purchase</span>
             </div>
             
             <div className="space-y-3 bg-gray-50 p-4 rounded-lg">
               <div className="flex items-center space-x-4">
-                <span className="text-sm">• Points:</span>
+                <span className="text-sm">• Points to convert:</span>
                 <Input
                   type="number"
                   value={pointsAmount}
@@ -178,24 +198,24 @@ export const CoinbaseWalletFlow: React.FC<CoinbaseWalletFlowProps> = ({ onBack, 
               
               <div className="space-y-1 text-sm">
                 <div className="flex justify-between">
-                  <span>• Platform Exchange Fee:</span>
+                  <span>• USDC Purchase Fee:</span>
                   <span>${sywFee.toFixed(2)}</span>
                 </div>
                 {transferMethod === 'ethereum' && (
                   <div className="flex justify-between">
-                    <span>• Network Fee (Ethereum):</span>
+                    <span>• Ethereum Network Fee:</span>
                     <span>${networkFee.toFixed(2)}</span>
                   </div>
                 )}
                 {transferMethod === 'assets' && (
                   <div className="flex justify-between text-green-600">
                     <span>• Network Fee:</span>
-                    <span>$0.00 (Direct to Assets)</span>
+                    <span>$0.00 (Stays in Coinbase)</span>
                   </div>
                 )}
                 <hr className="my-2" />
                 <div className="flex justify-between font-medium">
-                  <span>• Net USDC:</span>
+                  <span>• Net USDC Received:</span>
                   <span className="text-green-600">${netUSDC.toFixed(2)}</span>
                 </div>
               </div>
@@ -209,7 +229,7 @@ export const CoinbaseWalletFlow: React.FC<CoinbaseWalletFlowProps> = ({ onBack, 
                 onClick={handleSignInWallet}
                 className="bg-blue-600 hover:bg-blue-700"
               >
-                Sign in Wallet
+                Purchase USDC
               </Button>
             </div>
           </div>
