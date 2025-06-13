@@ -62,7 +62,7 @@ export const CoinbaseWalletFlow: React.FC<CoinbaseWalletFlowProps> = ({ onBack, 
               className="w-full"
             >
               <Wallet className="w-4 h-4 mr-2" />
-              {isConnecting ? 'Connecting...' : 'Connect with WalletConnect'}
+              {isConnecting ? 'Connecting...' : 'Connect Coinbase Account'}
             </Button>
           ) : (
             <div className="bg-green-50 border border-green-200 rounded-lg p-3">
