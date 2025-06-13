@@ -1,9 +1,11 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Wallet, CheckCircle, ExternalLink, Building2 } from 'lucide-react';
+import { Wallet, CheckCircle, ExternalLink, Building2, AlertTriangle, Shield, Zap } from 'lucide-react';
 import { FeeBreakdown } from './FeeBreakdown';
 import { CoinbaseWalletFlow } from '../v2/CoinbaseWalletFlow';
+import { CoinbaseAccountFlow } from '../v2/CoinbaseAccountFlow';
 
 interface ExistingUserFlowProps {
   currentStep: number;
@@ -16,6 +18,7 @@ export const ExistingUserFlow: React.FC<ExistingUserFlowProps> = ({ currentStep,
   const [walletAddress, setWalletAddress] = useState('');
   const [connectionMethod, setConnectionMethod] = useState<'wallet' | 'account' | null>(null);
   const [showWalletFlow, setShowWalletFlow] = useState(false);
+  const [showAccountFlow, setShowAccountFlow] = useState(false);
   const pointsToRedeem = 3000;
 
   const connectWallet = () => {
@@ -27,7 +30,7 @@ export const ExistingUserFlow: React.FC<ExistingUserFlowProps> = ({ currentStep,
     }, 1500);
   };
 
-  const handleWalletFlowComplete = (txData: any) => {
+  const handleFlowComplete = (txData: any) => {
     console.log('Transaction completed:', txData);
     setCurrentStep(3);
   };
@@ -36,7 +39,16 @@ export const ExistingUserFlow: React.FC<ExistingUserFlowProps> = ({ currentStep,
     return (
       <CoinbaseWalletFlow 
         onBack={() => setShowWalletFlow(false)}
-        onComplete={handleWalletFlowComplete}
+        onComplete={handleFlowComplete}
+      />
+    );
+  }
+
+  if (showAccountFlow) {
+    return (
+      <CoinbaseAccountFlow 
+        onBack={() => setShowAccountFlow(false)}
+        onComplete={handleFlowComplete}
       />
     );
   }
@@ -47,39 +59,99 @@ export const ExistingUserFlow: React.FC<ExistingUserFlowProps> = ({ currentStep,
         return (
           <div className="space-y-6">
             <div className="text-center">
-              <h3 className="text-xl font-semibold mb-2">Choose Your Coinbase Connection</h3>
-              <p className="text-gray-600">How would you like to receive your USDC?</p>
+              <h3 className="text-xl font-semibold mb-2">Choose Your Coinbase Destination</h3>
+              <p className="text-gray-600">Select how you'd like to receive your USDC</p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-4">
-              <Card className="cursor-pointer transition-all hover:shadow-lg border-2 hover:border-green-500" 
-                    onClick={() => setShowWalletFlow(true)}>
-                <CardContent className="p-6 text-center">
-                  <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                    <Wallet className="w-8 h-8 text-green-600" />
-                  </div>
-                  <h4 className="font-medium mb-2">⚡ Coinbase Wallet</h4>
-                  <p className="text-sm text-gray-600 mb-3">Connect directly • Choose transfer method</p>
-                  <Button className="w-full bg-green-600 hover:bg-green-700">
-                    Connect Wallet
-                  </Button>
-                </CardContent>
-              </Card>
+            {/* Recommended Option - Coinbase Account */}
+            <div className="relative">
+              <div className="absolute -top-2 left-4 z-10">
+                <span className="bg-green-600 text-white text-xs font-medium px-3 py-1 rounded-full">
+                  ✨ Recommended
+                </span>
+              </div>
+              <Card className="border-2 border-green-500 bg-green-50">
+                <CardContent className="p-6">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Building2 className="w-8 h-8 text-green-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-lg mb-2">Coinbase Account</h4>
+                      <p className="text-sm text-gray-700 mb-4">
+                        Your USDC goes directly to your Coinbase account balance - safe, simple, and ready to use.
+                      </p>
+                      
+                      <div className="grid grid-cols-2 gap-3 mb-4">
+                        <div className="flex items-center space-x-2">
+                          <Shield className="w-4 h-4 text-green-600" />
+                          <span className="text-xs text-green-700">Coinbase Security</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Zap className="w-4 h-4 text-green-600" />
+                          <span className="text-xs text-green-700">Instant Transfer</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <CheckCircle className="w-4 h-4 text-green-600" />
+                          <span className="text-xs text-green-700">No Gas Fees</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <CheckCircle className="w-4 h-4 text-green-600" />
+                          <span className="text-xs text-green-700">Easy to Use</span>
+                        </div>
+                      </div>
 
-              <Card className="cursor-pointer transition-all hover:shadow-lg border-2 hover:border-blue-500" 
-                    onClick={() => setConnectionMethod('account')}>
-                <CardContent className="p-6 text-center">
-                  <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                    <Building2 className="w-8 h-8 text-blue-600" />
+                      <Button 
+                        className="w-full bg-green-600 hover:bg-green-700"
+                        onClick={() => setShowAccountFlow(true)}
+                      >
+                        Use Coinbase Account
+                      </Button>
+                    </div>
                   </div>
-                  <h4 className="font-medium mb-2">🔘 Coinbase Account</h4>
-                  <p className="text-sm text-gray-600 mb-3">Enter deposit address • Direct transfer</p>
-                  <Button className="w-full" onClick={connectWallet}>
-                    Use Account Address
-                  </Button>
                 </CardContent>
               </Card>
             </div>
+
+            {/* Advanced Option - Coinbase Wallet */}
+            <Card className="border border-gray-300">
+              <CardContent className="p-6">
+                <div className="flex items-start space-x-4">
+                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Wallet className="w-8 h-8 text-blue-600" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <h4 className="font-semibold text-lg">Coinbase Wallet</h4>
+                      <span className="bg-blue-100 text-blue-700 text-xs font-medium px-2 py-1 rounded">
+                        Advanced
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-700 mb-4">
+                      For crypto-savvy users who want full control. Connects to DeFi, Web3, and other apps.
+                    </p>
+                    
+                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4">
+                      <div className="flex items-start space-x-2">
+                        <AlertTriangle className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
+                        <div className="text-xs text-amber-700">
+                          <strong>Important:</strong> You'll need to manage your own seed phrase and pay network fees (~$3.50). 
+                          Only choose this if you're comfortable with crypto wallets.
+                        </div>
+                      </div>
+                    </div>
+
+                    <Button 
+                      variant="outline" 
+                      className="w-full"
+                      onClick={() => setShowWalletFlow(true)}
+                    >
+                      Use Coinbase Wallet (Advanced)
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
             <div className="flex justify-between">
               <Button variant="outline" onClick={onBack}>Back</Button>
