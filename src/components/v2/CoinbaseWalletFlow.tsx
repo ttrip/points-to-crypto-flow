@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -72,7 +71,7 @@ export const CoinbaseWalletFlow: React.FC<CoinbaseWalletFlowProps> = ({ onBack, 
               className="w-full"
             >
               <Wallet className="w-4 h-4 mr-2" />
-              {isConnecting ? 'Connecting...' : 'Connect Coinbase Account'}
+              {isConnecting ? 'Connecting...' : 'Connect to Coinbase Wallet'}
             </Button>
           ) : (
             <div className="bg-green-50 border border-green-200 rounded-lg p-3">
