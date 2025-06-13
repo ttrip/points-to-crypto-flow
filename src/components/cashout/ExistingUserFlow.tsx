@@ -2,8 +2,9 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Wallet, CheckCircle, ExternalLink } from 'lucide-react';
+import { Wallet, CheckCircle, ExternalLink, Building2 } from 'lucide-react';
 import { FeeBreakdown } from './FeeBreakdown';
+import { CoinbaseWalletFlow } from '../v2/CoinbaseWalletFlow';
 
 interface ExistingUserFlowProps {
   currentStep: number;
@@ -14,6 +15,8 @@ interface ExistingUserFlowProps {
 export const ExistingUserFlow: React.FC<ExistingUserFlowProps> = ({ currentStep, setCurrentStep, onBack }) => {
   const [isWalletConnected, setIsWalletConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState('');
+  const [connectionMethod, setConnectionMethod] = useState<'wallet' | 'account' | null>(null);
+  const [showWalletFlow, setShowWalletFlow] = useState(false);
   const pointsToRedeem = 3000;
 
   const connectWallet = () => {
@@ -25,55 +28,62 @@ export const ExistingUserFlow: React.FC<ExistingUserFlowProps> = ({ currentStep,
     }, 1500);
   };
 
+  const handleWalletFlowComplete = (txData: any) => {
+    console.log('Transaction completed:', txData);
+    setCurrentStep(3);
+  };
+
+  if (showWalletFlow) {
+    return (
+      <CoinbaseWalletFlow 
+        onBack={() => setShowWalletFlow(false)}
+        onComplete={handleWalletFlowComplete}
+      />
+    );
+  }
+
   const renderStep = () => {
     switch (currentStep) {
       case 1:
         return (
           <div className="space-y-6">
             <div className="text-center">
-              <h3 className="text-xl font-semibold mb-2">Connect Your Coinbase Wallet</h3>
-              <p className="text-gray-600">Connect your existing Coinbase wallet to receive USDC directly</p>
+              <h3 className="text-xl font-semibold mb-2">Choose Your Coinbase Connection</h3>
+              <p className="text-gray-600">How would you like to receive your USDC?</p>
             </div>
 
-            <Card className="bg-blue-50 border-blue-200">
-              <CardContent className="p-6 text-center">
-                <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                  <Wallet className="w-8 h-8 text-blue-600" />
-                </div>
-                
-                {!isWalletConnected ? (
-                  <div className="space-y-4">
-                    <h4 className="font-medium">Choose Connection Method</h4>
-                    <div className="space-y-3">
-                      <Button 
-                        className="w-full" 
-                        onClick={connectWallet}
-                        disabled={false}
-                      >
-                        <Wallet className="w-4 h-4 mr-2" />
-                        Connect Coinbase Wallet
-                      </Button>
-                      <Button variant="outline" className="w-full">
-                        <ExternalLink className="w-4 h-4 mr-2" />
-                        WalletConnect
-                      </Button>
-                    </div>
+            <div className="grid md:grid-cols-2 gap-4">
+              <Card className="cursor-pointer transition-all hover:shadow-lg border-2 hover:border-green-500" 
+                    onClick={() => setShowWalletFlow(true)}>
+                <CardContent className="p-6 text-center">
+                  <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                    <Wallet className="w-8 h-8 text-green-600" />
                   </div>
-                ) : (
-                  <div className="space-y-3">
-                    <CheckCircle className="w-8 h-8 text-green-500 mx-auto" />
-                    <h4 className="font-medium text-green-700">Wallet Connected!</h4>
-                    <p className="text-sm text-gray-600 font-mono">{walletAddress}</p>
+                  <h4 className="font-medium mb-2">⚡ Coinbase Wallet</h4>
+                  <p className="text-sm text-gray-600 mb-3">Connect directly • Choose transfer method</p>
+                  <Button className="w-full bg-green-600 hover:bg-green-700">
+                    Connect Wallet
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="cursor-pointer transition-all hover:shadow-lg border-2 hover:border-blue-500" 
+                    onClick={() => setConnectionMethod('account')}>
+                <CardContent className="p-6 text-center">
+                  <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                    <Building2 className="w-8 h-8 text-blue-600" />
                   </div>
-                )}
-              </CardContent>
-            </Card>
+                  <h4 className="font-medium mb-2">🔘 Coinbase Account</h4>
+                  <p className="text-sm text-gray-600 mb-3">Enter deposit address • Direct transfer</p>
+                  <Button className="w-full" onClick={connectWallet}>
+                    Use Account Address
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
 
             <div className="flex justify-between">
               <Button variant="outline" onClick={onBack}>Back</Button>
-              {isWalletConnected && (
-                <Button onClick={() => setCurrentStep(2)}>Continue</Button>
-              )}
             </div>
           </div>
         );
