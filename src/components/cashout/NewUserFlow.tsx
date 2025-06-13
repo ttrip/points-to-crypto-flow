@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -94,7 +93,7 @@ export const NewUserFlow: React.FC<NewUserFlowProps> = ({ currentStep, setCurren
                     <h4 className="font-medium text-yellow-900">Important Instructions</h4>
                     <ul className="text-sm text-yellow-700 mt-1 space-y-1">
                       <li>• Log into your Coinbase account</li>
-                      <li>• Go to Assets → USD Coin (USDC) → Receive</li>
+                      <li>• Go to Assets → Cash (USDC) → Receive</li>
                       <li>• Select Ethereum (ERC-20) network</li>
                       <li>• Copy the deposit address</li>
                     </ul>
