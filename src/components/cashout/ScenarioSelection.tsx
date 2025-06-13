@@ -68,7 +68,7 @@ export const ScenarioSelection: React.FC<ScenarioSelectionProps> = ({ onScenario
               </p>
             </div>
             <Button className="w-full mt-4" onClick={() => onScenarioSelect('existing')}>
-              Connect Wallet
+              Connect Coinbase
             </Button>
           </CardContent>
         </Card>
