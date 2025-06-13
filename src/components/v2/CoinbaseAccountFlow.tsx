@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ArrowLeft, ExternalLink, Copy } from 'lucide-react';
+import { toast } from '@/components/ui/sonner';
 
 interface CoinbaseAccountFlowProps {
   onBack: () => void;
@@ -20,6 +21,12 @@ export const CoinbaseAccountFlow: React.FC<CoinbaseAccountFlowProps> = ({ onBack
   const netUSDC = usdcAmount - sywFee;
 
   const handleConfirm = () => {
+    // Show confirmation toast
+    toast("Transaction Confirmed! 🎉", {
+      description: `Converting ${pointsAmount} points to $${netUSDC.toFixed(2)} USDC. Your transaction is being processed.`,
+      duration: 4000,
+    });
+
     const txData = {
       type: 'account',
       address: depositAddress,
@@ -28,7 +35,11 @@ export const CoinbaseAccountFlow: React.FC<CoinbaseAccountFlowProps> = ({ onBack
       netUSDC,
       txHash: '0x123...abc'
     };
-    onComplete(txData);
+    
+    // Add a small delay to let the user see the toast before completing
+    setTimeout(() => {
+      onComplete(txData);
+    }, 1500);
   };
 
   const isFormValid = depositAddress.length >= 40 && pointsAmount > 0;

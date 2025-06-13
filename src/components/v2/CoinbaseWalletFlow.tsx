@@ -1,9 +1,9 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArrowLeft, Wallet, CheckCircle, Zap, DollarSign, AlertCircle } from 'lucide-react';
+import { toast } from '@/components/ui/sonner';
 
 interface CoinbaseWalletFlowProps {
   onBack: () => void;
@@ -33,6 +33,13 @@ export const CoinbaseWalletFlow: React.FC<CoinbaseWalletFlowProps> = ({ onBack, 
   };
 
   const handleSignInWallet = () => {
+    // Show confirmation toast
+    const transferMethodText = transferMethod === 'assets' ? 'Direct to Assets' : 'Direct to Ethereum';
+    toast("Wallet Transaction Confirmed! 🎉", {
+      description: `Converting ${pointsAmount} points to $${netUSDC.toFixed(2)} USDC via ${transferMethodText}. Processing transaction...`,
+      duration: 4000,
+    });
+
     const txData = {
       type: 'wallet',
       transferMethod,
@@ -44,7 +51,11 @@ export const CoinbaseWalletFlow: React.FC<CoinbaseWalletFlowProps> = ({ onBack, 
       netUSDC,
       txHash: '0x456...def'
     };
-    onComplete(txData);
+    
+    // Add a small delay to let the user see the toast before completing
+    setTimeout(() => {
+      onComplete(txData);
+    }, 1500);
   };
 
   return (
