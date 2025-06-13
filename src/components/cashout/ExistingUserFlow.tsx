@@ -35,6 +35,11 @@ export const ExistingUserFlow: React.FC<ExistingUserFlowProps> = ({ currentStep,
     setCurrentStep(3);
   };
 
+  const handleMethodSelection = (method: 'wallet' | 'account') => {
+    setConnectionMethod(method);
+    setCurrentStep(2);
+  };
+
   if (showWalletFlow) {
     return (
       <CoinbaseWalletFlow 
@@ -103,7 +108,7 @@ export const ExistingUserFlow: React.FC<ExistingUserFlowProps> = ({ currentStep,
 
                       <Button 
                         className="w-full bg-green-600 hover:bg-green-700"
-                        onClick={() => setShowAccountFlow(true)}
+                        onClick={() => handleMethodSelection('account')}
                       >
                         Use Coinbase Account
                       </Button>
@@ -144,7 +149,7 @@ export const ExistingUserFlow: React.FC<ExistingUserFlowProps> = ({ currentStep,
                     <Button 
                       variant="outline" 
                       className="w-full"
-                      onClick={() => setShowWalletFlow(true)}
+                      onClick={() => handleMethodSelection('wallet')}
                     >
                       Use Coinbase Wallet (Advanced)
                     </Button>
@@ -169,30 +174,95 @@ export const ExistingUserFlow: React.FC<ExistingUserFlowProps> = ({ currentStep,
 
             <FeeBreakdown pointsToRedeem={pointsToRedeem} />
 
+            {/* Instructions based on selected method */}
+            {connectionMethod === 'account' && (
+              <Card className="bg-blue-50 border-blue-200">
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center space-x-2">
+                    <Building2 className="w-5 h-5 text-blue-600" />
+                    <span>Coinbase Account Instructions</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="text-sm text-blue-800">
+                    <h4 className="font-medium mb-2">What happens next:</h4>
+                    <ol className="list-decimal list-inside space-y-1">
+                      <li>You'll be redirected to Coinbase to sign in</li>
+                      <li>Authorize the transaction in your Coinbase account</li>
+                      <li>Your USDC will appear instantly in your account balance</li>
+                      <li>No network fees - only our platform exchange fee applies</li>
+                    </ol>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {connectionMethod === 'wallet' && (
+              <Card className="bg-amber-50 border-amber-200">
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center space-x-2">
+                    <Wallet className="w-5 h-5 text-amber-600" />
+                    <span>Coinbase Wallet Instructions</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="text-sm text-amber-800">
+                    <h4 className="font-medium mb-2">What happens next:</h4>
+                    <ol className="list-decimal list-inside space-y-1">
+                      <li>Connect your Coinbase Wallet browser extension</li>
+                      <li>Choose between direct to wallet assets (free) or Ethereum mainnet (~$3.50 fee)</li>
+                      <li>Sign the transaction in your wallet</li>
+                      <li>USDC will be sent to your wallet address</li>
+                    </ol>
+                    <div className="mt-3 p-2 bg-amber-100 rounded border border-amber-300">
+                      <p className="text-xs font-medium">
+                        💡 Tip: Choose "Direct to Assets" to avoid network fees and keep your USDC in Coinbase.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Transaction Summary</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Connected Wallet</span>
-                  <span className="font-mono text-sm">{walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}</span>
+                  <span className="text-gray-600">Destination</span>
+                  <span className="font-medium">
+                    {connectionMethod === 'account' ? 'Coinbase Account' : 'Coinbase Wallet'}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Network</span>
-                  <span>Ethereum (ERC-20)</span>
+                  <span>
+                    {connectionMethod === 'account' ? 'Coinbase Internal' : 'Ethereum (ERC-20)'}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Estimated Arrival</span>
-                  <span>1-2 blocks (~30 seconds)</span>
+                  <span>
+                    {connectionMethod === 'account' ? 'Instant' : '1-2 blocks (~30 seconds)'}
+                  </span>
                 </div>
               </CardContent>
             </Card>
 
             <div className="flex justify-between">
               <Button variant="outline" onClick={() => setCurrentStep(1)}>Back</Button>
-              <Button onClick={() => setCurrentStep(3)} className="bg-green-600 hover:bg-green-700">
-                Sign & Send Transaction
+              <Button 
+                onClick={() => {
+                  if (connectionMethod === 'account') {
+                    setShowAccountFlow(true);
+                  } else {
+                    setShowWalletFlow(true);
+                  }
+                }} 
+                className="bg-green-600 hover:bg-green-700"
+              >
+                Continue to {connectionMethod === 'account' ? 'Coinbase' : 'Wallet Connection'}
               </Button>
             </div>
           </div>
@@ -207,7 +277,9 @@ export const ExistingUserFlow: React.FC<ExistingUserFlowProps> = ({ currentStep,
             
             <div>
               <h3 className="text-xl font-semibold mb-2">Transaction Complete!</h3>
-              <p className="text-gray-600">Your USDC has been sent to your connected wallet</p>
+              <p className="text-gray-600">
+                Your USDC has been sent to your {connectionMethod === 'account' ? 'Coinbase account' : 'connected wallet'}
+              </p>
             </div>
 
             <Card className="bg-green-50 border-green-200">
@@ -230,9 +302,15 @@ export const ExistingUserFlow: React.FC<ExistingUserFlowProps> = ({ currentStep,
             </Card>
 
             <div className="space-y-3">
-              <Button onClick={() => window.open('https://wallet.coinbase.com', '_blank')} className="w-full">
+              <Button 
+                onClick={() => window.open(
+                  connectionMethod === 'account' ? 'https://www.coinbase.com' : 'https://wallet.coinbase.com', 
+                  '_blank'
+                )} 
+                className="w-full"
+              >
                 <ExternalLink className="w-4 h-4 mr-2" />
-                View in Coinbase Wallet
+                View in {connectionMethod === 'account' ? 'Coinbase' : 'Coinbase Wallet'}
               </Button>
               <Button onClick={() => setCurrentStep(0)} variant="outline" className="w-full">
                 Start New Transaction
