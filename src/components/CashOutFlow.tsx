@@ -1,9 +1,11 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScenarioSelection } from './cashout/ScenarioSelection';
 import { NewUserFlow } from './cashout/NewUserFlow';
 import { ExistingUserFlow } from './cashout/ExistingUserFlow';
+import { ExistingUserFlowV2 } from './v2/ExistingUserFlowV2';
+import { FlowVersionToggle } from './v2/FlowVersionToggle';
 import { ProgressSteps } from './cashout/ProgressSteps';
 
 interface CashOutFlowProps {
@@ -19,15 +21,25 @@ export const CashOutFlow: React.FC<CashOutFlowProps> = ({
   userScenario,
   setUserScenario
 }) => {
+  const [useV2Flow, setUseV2Flow] = useState(false);
+
   const renderCurrentStep = () => {
     if (currentStep === 0) {
       return (
-        <ScenarioSelection 
-          onScenarioSelect={(scenario) => {
-            setUserScenario(scenario);
-            setCurrentStep(1);
-          }}
-        />
+        <>
+          {userScenario === 'existing' && (
+            <FlowVersionToggle 
+              useV2={useV2Flow}
+              onToggle={setUseV2Flow}
+            />
+          )}
+          <ScenarioSelection 
+            onScenarioSelect={(scenario) => {
+              setUserScenario(scenario);
+              setCurrentStep(1);
+            }}
+          />
+        </>
       );
     }
 
@@ -46,14 +58,31 @@ export const CashOutFlow: React.FC<CashOutFlowProps> = ({
 
     if (userScenario === 'existing') {
       return (
-        <ExistingUserFlow 
-          currentStep={currentStep}
-          setCurrentStep={setCurrentStep}
-          onBack={() => {
-            setCurrentStep(0);
-            setUserScenario(null);
-          }}
-        />
+        <>
+          <FlowVersionToggle 
+            useV2={useV2Flow}
+            onToggle={setUseV2Flow}
+          />
+          {useV2Flow ? (
+            <ExistingUserFlowV2 
+              currentStep={currentStep}
+              setCurrentStep={setCurrentStep}
+              onBack={() => {
+                setCurrentStep(0);
+                setUserScenario(null);
+              }}
+            />
+          ) : (
+            <ExistingUserFlow 
+              currentStep={currentStep}
+              setCurrentStep={setCurrentStep}
+              onBack={() => {
+                setCurrentStep(0);
+                setUserScenario(null);
+              }}
+            />
+          )}
+        </>
       );
     }
 
